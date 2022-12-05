@@ -31,10 +31,16 @@ struct ContentView: View {
         NavigationView {
             Form {
                 Section {
-                    TextField("Amount: ", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                        .keyboardType(.decimalPad)
-                        .focused($amountIsFocused)
-                    Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                    HStack {
+                        Text("Subtotal: ")
+                        TextField("Amount", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                            .keyboardType(.decimalPad)
+                            .focused($amountIsFocused)
+                    }
+                    HStack {
+                        Text("Each person owes")
+                        Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                    }
                     Picker("Number of people", selection: $numberOfPeople) {
                         ForEach(2 ..< 100) {
                             Text("\($0) people")
@@ -50,7 +56,7 @@ struct ContentView: View {
                     }
                     .pickerStyle(.segmented)
                 } header: {
-                    Text("How much tip do you wnat to leave?")
+                    Text("How much tip do you want to leave?")
                 }
             }
             .navigationTitle("WeSplit")
