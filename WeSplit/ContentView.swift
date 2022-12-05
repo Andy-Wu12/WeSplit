@@ -28,7 +28,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationView {
+        VStack {
             Form {
                 Section {
                     HStack {
@@ -36,10 +36,6 @@ struct ContentView: View {
                         TextField("Amount", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                             .keyboardType(.decimalPad)
                             .focused($amountIsFocused)
-                    }
-                    HStack {
-                        Text("Each person owes")
-                        Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                     }
                     Picker("Number of people", selection: $numberOfPeople) {
                         ForEach(2 ..< 100) {
@@ -57,6 +53,15 @@ struct ContentView: View {
                     .pickerStyle(.segmented)
                 } header: {
                     Text("How much tip do you want to leave?")
+                }
+                
+                // Result
+                Section {
+                    HStack {
+                        Text("Each person owes")
+                        Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                    }
+                    
                 }
             }
             .navigationTitle("WeSplit")
