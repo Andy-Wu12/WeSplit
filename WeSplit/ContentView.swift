@@ -27,6 +27,11 @@ struct ContentView: View {
         return amountPerPerson
     }
     
+    var orderTotal: Double {
+        let tipSelection = Double(tipPercentage)
+        return checkAmount + (checkAmount * (tipSelection / 100))
+    }
+    
     var body: some View {
         VStack {
             Form {
@@ -53,6 +58,14 @@ struct ContentView: View {
                     .pickerStyle(.segmented)
                 } header: {
                     Text("How much tip do you want to leave?")
+                }
+                
+                // Check total w/ tip
+                Section {
+                    HStack {
+                        Text("Total: ")
+                        Text(orderTotal, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                    }
                 }
                 
                 // Result
