@@ -15,7 +15,8 @@ struct ContentView: View {
     @FocusState private var amountIsFocused: Bool
     
     let tipPercentages = [10, 15, 20, 25, 0]
-        
+    let currencyFormat: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
+    
     var totalPerPerson: Double {
         let peopleCount = Double(numberOfPeople + 2)
         let tipSelection = Double(tipPercentage)
@@ -38,7 +39,7 @@ struct ContentView: View {
                 Section {
                     HStack {
                         Text("Subtotal: ")
-                        TextField("Amount", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        TextField("Amount", value: $checkAmount, format: currencyFormat)
                             .keyboardType(.decimalPad)
                             .focused($amountIsFocused)
                     }
@@ -64,7 +65,7 @@ struct ContentView: View {
                 Section {
                     HStack {
                         Text("Total: ")
-                        Text(orderTotal, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        Text(orderTotal, format: currencyFormat)
                     }
                 }
                 
@@ -72,7 +73,7 @@ struct ContentView: View {
                 Section {
                     HStack {
                         Text("Each person owes")
-                        Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        Text(totalPerPerson, format: currencyFormat)
                     }
                     
                 }
