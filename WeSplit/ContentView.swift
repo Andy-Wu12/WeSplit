@@ -11,7 +11,10 @@ struct ContentView: View {
     @State private var checkAmount = 0.0
     @State private var numberOfPeople = 2
     @State private var tipPercentage = 20
-
+    
+    @State private var showCustomTip = false
+    @State private var customTip: Double = 0
+    
     @FocusState private var amountIsFocused: Bool
     
     let tipPercentages = [10, 15, 20, 25, 0]
@@ -19,23 +22,23 @@ struct ContentView: View {
     
     var totalPerPerson: Double {
         let peopleCount = Double(numberOfPeople + 2)
-        let tipSelection = Double(tipPercentage)
-
-        let tipValue = checkAmount * (tipSelection / 100)
-        let grandTotal = checkAmount + tipValue
-        let amountPerPerson = grandTotal / peopleCount
+        let amountPerPerson = orderTotal / peopleCount
         
         return amountPerPerson
     }
     
     var orderTotal: Double {
-        let tipSelection = Double(tipPercentage)
-        return checkAmount + (checkAmount * (tipSelection / 100))
+        if !showCustomTip {
+            let tipSelection = Double(tipPercentage)
+            return checkAmount + (checkAmount * (tipSelection / 100))
+        }
+        return checkAmount + customTip
     }
     
     var body: some View {
         VStack {
             Form {
+                // Bill details
                 Section {
                     HStack {
                         Text("Subtotal: ")
@@ -48,37 +51,47 @@ struct ContentView: View {
                             Text("\($0) people")
                         }
                     }
+                } header: {
+                    Text("Bill Details")
                 }
                 
+                // Tip details
                 Section {
-                    Picker("Tip percentage", selection: $tipPercentage) {
-                        ForEach(tipPercentages, id: \.self) {
-                            Text($0, format: .percent)
+                    Toggle("Custom Tip", isOn: $showCustomTip)
+                    if !showCustomTip {
+                        Picker("Tip percentage", selection: $tipPercentage) {
+                            ForEach(tipPercentages, id: \.self) {
+                                Text($0, format: .percent)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                    } else {
+                        HStack {
+                            Text("Amount: ")
+                            TextField("Amount", value: $customTip, format: currencyFormat)
+                                .keyboardType(.decimalPad)
+                                .focused($amountIsFocused)
                         }
                     }
-                    .pickerStyle(.segmented)
                 } header: {
                     Text("How much tip do you want to leave?")
                 }
                 
-                // Check total w/ tip
+                // Check total w/ tip + calculation result
                 Section {
                     HStack {
                         Text("Total: ")
                         Text(orderTotal, format: currencyFormat)
                     }
-                }
-                
-                // Result
-                Section {
                     HStack {
                         Text("Each person owes")
                         Text(totalPerPerson, format: currencyFormat)
                     }
                     
+                } header: {
+                    Text("Result")
                 }
             }
-            .navigationTitle("WeSplit")
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
