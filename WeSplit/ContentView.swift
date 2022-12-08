@@ -35,6 +35,16 @@ struct ContentView: View {
         return checkAmount + customTip
     }
     
+    var tipIsZero: Bool {
+        if showCustomTip && customTip == 0.0 {
+            return true
+        }
+        if !showCustomTip && tipPercentage == 0 {
+            return true
+        }
+        return false
+    }
+    
     var body: some View {
         VStack {
             Form {
@@ -82,7 +92,9 @@ struct ContentView: View {
                     HStack {
                         Text("Total: ")
                         Text(orderTotal, format: currencyFormat)
-                    }
+                     /// https://www.hackingwithswift.com/books/ios-swiftui/views-and-modifiers-wrap-up Challenge 1
+                    }.foregroundColor(tipIsZero ? .red : .black)
+                    
                     HStack {
                         Text("Each person owes")
                         Text(totalPerPerson, format: currencyFormat)
